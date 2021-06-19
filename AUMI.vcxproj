@@ -139,11 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Code\Code.c" />
     <ClCompile Include="src\Entry.c" />
     <ClCompile Include="src\Objects\Objects.c" />
     <ClCompile Include="src\Patterns\Patterns.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Code\Code.h" />
     <ClInclude Include="src\Patterns\Patterns.h" />
     <ClInclude Include="src\Shared.h" />
     <ClInclude Include="src\Objects\Objects.h" />

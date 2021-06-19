@@ -5,17 +5,21 @@
 
 //I use the variable_global_get function as a base for the scans.
 AUMIResult 
-ObGlobalInstance(struct YYObjectBase** outInstance, void* variable_global_get_fn, int Reserved)
+ObGlobalInstance(void* outInstance, void* variable_global_get_fn, int Reserved)
 {
 	if (outInstance == NULL)
 		return AUMI_INVALID;
 
 	unsigned char* offset = PaFindAOB("\x8B\x00\x00\x00\x00\x00", "x?????", (long)variable_global_get_fn + Reserved, 64);
 
+	if (!offset)
+		return AUMI_NOT_FOUND;
+
 	if (offset[1] >= 0x0D && offset[1] <= 0x3D) //Valid r32 mov opcode suffixes
 	{
-		outInstance = (struct YYObjectBase**)(offset + 2);
+		*(void**)outInstance = *(void**)(offset + 2);
 		return AUMI_OK;
+		
 	}
 
 	//Avoid infinite loops
