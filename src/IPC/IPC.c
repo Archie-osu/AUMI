@@ -1,10 +1,10 @@
 #include <Windows.h>
-#include "IPC.h"
+#include "Wrappers/Wrappers.h"
 
 static HANDLE g_hPipeHandle = INVALID_HANDLE_VALUE;
 
 //Windows-exclusive, sorry.
-static int InitIPCPipe()
+static BOOL InitIPCPipe()
 {
 	if (g_hPipeHandle != INVALID_HANDLE_VALUE && g_hPipeHandle != 0)
 		CloseHandle(g_hPipeHandle);
@@ -20,42 +20,46 @@ static int InitIPCPipe()
 	);
 
 	if (g_hPipeHandle == INVALID_HANDLE_VALUE)
-		return 0;
+		return FALSE;
 
-	return 1;
+	return TRUE;
+}
+
+static BOOL IpcPostReply(struct IPCReply_t* pReply)
+{
+	DWORD dwBytesTransferred;
+	return WriteFile(g_hPipeHandle, pReply, sizeof(struct IPCReply_t), &dwBytesTransferred, NULL);
 }
 
 void IpcManagerWorker()
 {
-	MessageBoxA(0, "AUMI IPC online!", 0, 0);
 	while (1)
 	{
-		if (!InitIPCPipe())
+		if (InitIPCPipe())
 		{
-			Sleep(5);
-			continue;
+			struct IPCMessage_t MessageBuffer;
+			struct IPCReply_t MessageReply;
+			DWORD dwBytesTransferred;
+
+			BOOL result = ReadFile(g_hPipeHandle, &MessageBuffer, sizeof(MessageBuffer), &dwBytesTransferred, NULL);
+			if (result)
+			{
+				switch (MessageBuffer.FuncID)
+				{
+				case IPCID_TestCommunication:
+					IpcTestCommunication(&MessageBuffer, &MessageReply);
+					IpcPostReply(&MessageReply);
+					break;
+				case IPCID_GetFunctionByIndex:
+					IpcGetFunctionByIndex(&MessageBuffer, &MessageReply);
+					IpcPostReply(&MessageReply);
+					break;
+				default:
+					MessageReply.AUMIResult = AUMI_NOT_IMPLEMENTED;
+					IpcPostReply(&MessageReply);
+				}
+			}
 		}
-
-		struct IPCMessage_t MessageBuffer;
-		DWORD dwBytesTransferred;
-
-		BOOL result = ReadFile(g_hPipeHandle, &MessageBuffer, sizeof(MessageBuffer), &dwBytesTransferred, NULL);
-
-		//Bail early if the file was read unsuccessful.
-		if (!result)
-		{
-			Sleep(5);
-			continue;
-		}
-			
-
-		switch (MessageBuffer.FuncID)
-		{
-		case 0x01:
-			MessageBoxA(0, "This is a test!", "AUMI - IPC Message", MB_OK);
-			break;
-		}
-
 		Sleep(5);
 	}
 }

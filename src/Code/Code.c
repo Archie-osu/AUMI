@@ -22,19 +22,19 @@ AUMIResult AiGetIndexFunc(int inIndex, struct RFunction* refFunction, unsigned l
 			return AUMI_NOT_FOUND;
 	}
 
-	strcpy_s(refFunction->name, 64, "<Invalid index>");
+	char* pName = NULL;
 
 	void(__cdecl* fn)(int, char**, void**, int*) = g_pGetFunctionFromArray;
 
-	fn(inIndex, &refFunction->name, &refFunction->function, &refFunction->argnum);
+	fn(inIndex, &pName, &refFunction->function, &refFunction->argnum);
 
-	if (!strcmp(refFunction->name, "<Invalid index>"))
+	if (pName == NULL) {
+		strcpy_s(refFunction->name, 64, "<Invalid function>");
 		return AUMI_INVALID;
+	}
+		
+
+	strcpy_s(refFunction->name, 64, pName);
 
 	return AUMI_OK;
-}
-
-AUMIResult AiGetRawAddress(unsigned long* outAddress)
-{
-	return AUMI_NOT_IMPLEMENTED;
 }

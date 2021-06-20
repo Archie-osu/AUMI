@@ -144,6 +144,7 @@
     <ClCompile Include="src\IPC\IPC.c" />
     <ClCompile Include="src\Objects\Objects.c" />
     <ClCompile Include="src\Patterns\Patterns.c" />
+    <ClCompile Include="src\IPC\Wrappers\Wrappers.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Code\Code.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="src\Patterns\Patterns.h" />
     <ClInclude Include="src\Shared.h" />
     <ClInclude Include="src\Objects\Objects.h" />
+    <ClInclude Include="src\IPC\Wrappers\Wrappers.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

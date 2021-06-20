@@ -8,7 +8,7 @@ unsigned long PaFindAOB(const char* Pattern, const char* Mask, long base, unsign
 
 	for (unsigned i = 0; i < size - PatternSize; i++)
 	{
-		char found = 0;
+		int found = 1;
 		for (unsigned j = 0; j < PatternSize; j++)
 		{
 			found &= Mask[j] == '?' || Pattern[j] == *(char*)(base + i + j);
