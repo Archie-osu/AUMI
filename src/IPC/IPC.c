@@ -57,6 +57,7 @@ void IpcManagerWorker()
 				default:
 					MessageReply.AUMIResult = AUMI_NOT_IMPLEMENTED;
 					IpcPostReply(&MessageReply);
+					break;
 				}
 			}
 		}

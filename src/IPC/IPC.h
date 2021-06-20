@@ -8,7 +8,8 @@
 struct IPCMessage_t 
 {
 	short FuncID;
-	char Buffer[510];
+	short BufferSize;
+	char Buffer[512];
 };
 
 //AUMI replies sent to the server.
@@ -17,7 +18,7 @@ struct IPCMessage_t
 struct IPCReply_t 
 {
 	int AUMIResult; //Always contains a value.
-	char Buffer[124]; //Buffer
+	char Buffer[128]; //Buffer
 };
 
 void IpcManagerWorker();

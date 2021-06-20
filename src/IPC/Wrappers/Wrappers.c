@@ -35,5 +35,5 @@ void IpcGetFunctionByIndex(const struct IPCMessage_t* Message, struct IPCReply_t
 void IpcTestCommunication(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
 {
 	Reply->AUMIResult = AUMI_OK;
-	strcpy_s(Reply->Buffer, 124, "Hello from AUMI - If you can read this, the IPC Test was successful!");
+	strcpy_s(Reply->Buffer, 128, "Hello from AUMI - If you can read this, the IPC Test was successful!\nNow just making sure we copy all 128 characters. The end..");
 }
