@@ -58,8 +58,8 @@ struct CCode
 };
 #pragma pack(pop)
 
-__declspec(dllexport) AUMIResult ObGlobalInstance(void* outInstance, void* inVariableGlobalGetFN, int Reserved);
+__declspec(dllexport) AUMIResult AiGlobalInstance(void* outInstance, void* inVariableGlobalGetFN, int Reserved);
 
-__declspec(dllexport) AUMIResult ObCreateCode(struct CCode* outCode, void* inVMCodeBuffer, int inBufferSize, int inLocalVarsUsed, const char* inName);
+__declspec(dllexport) AUMIResult AiCreateCode(struct CCode* outCode, void* inVMCodeBuffer, int inBufferSize, int inLocalVarsUsed, const char* inName);
 
-__declspec(dllexport) AUMIResult ObDestroyCode(struct CCode* refCode);
+__declspec(dllexport) AUMIResult AiDestroyCode(struct CCode* refCode);

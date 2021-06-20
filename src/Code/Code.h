@@ -9,8 +9,8 @@ struct __declspec(dllexport) RFunction
 };
 
 
-__declspec(dllexport) AUMIResult CoExecuteCode(void* selfinst, void* otherinst, struct CCode* code, struct RValue* res, int flags);
+__declspec(dllexport) AUMIResult AiExecuteCode(void* selfinst, void* otherinst, struct CCode* code, struct RValue* res, int flags);
 
-__declspec(dllexport) AUMIResult GetFunctionByIndex(int inIndex, struct RFunction* refFunction);
+__declspec(dllexport) AUMIResult AiGetIndexFunc(int inIndex, struct RFunction* refFunction, unsigned long inBase, unsigned inSize);
 
 __declspec(dllexport) AUMIResult AiGetRawAddress(unsigned long* outAddress);

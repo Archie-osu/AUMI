@@ -1,4 +1,7 @@
 #pragma once
+//Prefixes of functions go as follows:
+//Ai prefix - Internal function, only usable with C / C++ code, not the IPC API.
+//Ipc prefix - IPC-only functions, usually handlers that convert the message to Ai-function compatible arguments.
 
 typedef enum __declspec(dllexport) AUMIResult
 {

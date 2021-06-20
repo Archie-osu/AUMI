@@ -27,6 +27,9 @@
     <ClCompile Include="src\Code\Code.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\IPC\IPC.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Objects\Objects.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Code\Code.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IPC\IPC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

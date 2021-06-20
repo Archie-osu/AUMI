@@ -5,7 +5,7 @@
 
 //I use the variable_global_get function as a base for the scans.
 AUMIResult 
-ObGlobalInstance(void* outInstance, void* variable_global_get_fn, int Reserved)
+AiGlobalInstance(void* outInstance, void* variable_global_get_fn, int Reserved)
 {
 	if (outInstance == NULL)
 		return AUMI_INVALID;
@@ -26,11 +26,11 @@ ObGlobalInstance(void* outInstance, void* variable_global_get_fn, int Reserved)
 	if (Reserved > 32) 
 		return AUMI_NOT_FOUND;
 
-	return ObGlobalInstance(outInstance, variable_global_get_fn, Reserved + 1);
+	return AiGlobalInstance(outInstance, variable_global_get_fn, Reserved + 1);
 }
 
 AUMIResult 
-ObCreateCode(struct CCode* outCode, void* inVMCodeBuffer, int inBufferSize, int inLocalVarsUsed, const char* inName)
+AiCreateCode(struct CCode* outCode, void* inVMCodeBuffer, int inBufferSize, int inLocalVarsUsed, const char* inName)
 {
 	memset(outCode, 0, sizeof(struct CCode));
 
@@ -55,7 +55,7 @@ ObCreateCode(struct CCode* outCode, void* inVMCodeBuffer, int inBufferSize, int 
 }
 
 AUMIResult 
-ObDestroyCode(struct CCode* refCode)
+AiDestroyCode(struct CCode* refCode)
 {
 	if (refCode->i_flags != 'AUMI') //not ours
 		return AUMI_INVALID;
