@@ -3,30 +3,14 @@
 #include <stdlib.h>
 #include "../Patterns/Patterns.h"
 
-//I use the variable_global_get function as a base for the scans.
 AUMIResult 
-AiGlobalInstance(void* outInstance, void* variable_global_get_fn, int Reserved)
+AiGlobalInstance(void* outInstance)
 {
-	if (outInstance == NULL)
+	if (!outInstance)
 		return AUMI_INVALID;
 
-	unsigned char* offset = PaFindAOB("\x8B\x00\x00\x00\x00\x00", "x?????", (long)variable_global_get_fn + Reserved, 64);
-
-	if (!offset)
-		return AUMI_NOT_FOUND;
-
-	if (offset[1] >= 0x0D && offset[1] <= 0x3D) //Valid r32 mov opcode suffixes
-	{
-		*(void**)outInstance = *(void**)(offset + 2);
-		return AUMI_OK;
-		
-	}
-
-	//Avoid infinite loops
-	if (Reserved > 32) 
-		return AUMI_NOT_FOUND;
-
-	return AiGlobalInstance(outInstance, variable_global_get_fn, Reserved + 1);
+	//TODO: Call @@GlobalScope@@, result in RValue is the pointer.
+	return AUMI_NOT_IMPLEMENTED;
 }
 
 AUMIResult 

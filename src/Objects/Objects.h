@@ -58,7 +58,7 @@ struct CCode
 };
 #pragma pack(pop)
 
-__declspec(dllexport) AUMIResult AiGlobalInstance(void* outInstance, void* inVariableGlobalGetFN, int Reserved);
+__declspec(dllexport) AUMIResult AiGlobalInstance(void* outInstance);
 
 __declspec(dllexport) AUMIResult AiCreateCode(struct CCode* outCode, void* inVMCodeBuffer, int inBufferSize, int inLocalVarsUsed, const char* inName);
 

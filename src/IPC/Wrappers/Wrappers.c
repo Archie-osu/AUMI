@@ -4,32 +4,25 @@
 #include <TlHelp32.h>
 #include <Psapi.h>
 
-static MODULEINFO GetCurrentModuleInfo()
-{
-	MODULEINFO modinfo = { 0 };
-	HMODULE hModule = GetModuleHandleA(NULL);
-	if (hModule == 0)
-		return modinfo;
-	GetModuleInformation(GetCurrentProcess(), hModule, &modinfo, sizeof(MODULEINFO));
-	return modinfo;
-}
-
-
 void IpcGetFunctionByIndex(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
 {
-	if (Message->FuncID != IPCID_GetFunctionByIndex)
-	{
-		Reply->AUMIResult = AUMI_INVALID;
-		return;
-	}
-	
 	struct RFunction RFInformation;
-	HMODULE hMod = GetModuleHandleA(NULL);
 
-	AUMIResult result = AiGetIndexFunc(*(int*)(Message->Buffer), &RFInformation, GetCurrentModuleInfo().lpBaseOfDll, GetCurrentModuleInfo().SizeOfImage);
+	AUMIResult result = AiGetFunctionByIndex(*(int*)(Message->Buffer), &RFInformation);
 
 	Reply->AUMIResult = result;
 	memcpy(Reply->Buffer, &RFInformation, sizeof(struct RFunction));
+}
+
+void IpcGetFunctionByName(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
+{
+	struct RFunction RFInformation;
+	int outIndex;
+	AUMIResult result = AiGetFunctionByName(Message->Buffer, &RFInformation, &outIndex);
+
+	Reply->AUMIResult = result;
+	memcpy(Reply->Buffer, &RFInformation, sizeof(struct RFunction));
+	memcpy(Reply->Buffer + sizeof(struct RFunction), &outIndex, sizeof(int));
 }
 
 void IpcTestCommunication(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
