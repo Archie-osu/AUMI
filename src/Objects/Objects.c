@@ -4,16 +4,6 @@
 #include "../Patterns/Patterns.h"
 
 AUMIResult 
-AiGlobalInstance(void* outInstance)
-{
-	if (!outInstance)
-		return AUMI_INVALID;
-
-	//TODO: Call @@GlobalScope@@, result in RValue is the pointer.
-	return AUMI_NOT_IMPLEMENTED;
-}
-
-AUMIResult 
 AiCreateCode(struct CCode* outCode, void* inVMCodeBuffer, int inBufferSize, int inLocalVarsUsed, const char* inName)
 {
 	memset(outCode, 0, sizeof(struct CCode));

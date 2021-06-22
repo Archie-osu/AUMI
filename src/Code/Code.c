@@ -81,3 +81,31 @@ AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction
 
 	return AUMI_FAIL;
 }
+
+AUMIResult AiGetGlobalInstance(void* outInstance)
+{
+	if (!outInstance)
+		return AUMI_INVALID;
+
+	struct _Out
+	{
+		struct YYObjectBase* Value;
+	};
+
+	struct RFunction FunctionEntry;
+	struct RValue Result;
+
+
+	if (AiGetFunctionByName("@@GlobalScope@@", &FunctionEntry, NULL))
+		return AUMI_NOT_FOUND;
+
+	if (!FunctionEntry.function)
+		return AUMI_FAIL;
+
+	void(*fn)(struct RValue*, void*, void*, int, struct RValue*) = FunctionEntry.function;
+	fn(&Result, NULL, NULL, 0, NULL);
+
+	((struct _Out*)outInstance)->Value = Result.value;
+
+	return AUMI_OK;
+}
