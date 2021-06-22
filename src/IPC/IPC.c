@@ -58,6 +58,10 @@ void IpcManagerWorker()
 					IpcGetFunctionByName(&MessageBuffer, &MessageReply);
 					IpcPostReply(&MessageReply);
 					break;
+				case IPCID_ExecuteCode:
+					IpcExecuteCode(&MessageBuffer, &MessageReply);
+					IpcPostReply(&MessageReply);
+					break;
 				default:
 					MessageReply.AUMIResult = AUMI_NOT_IMPLEMENTED;
 					IpcPostReply(&MessageReply);

@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <Psapi.h>
 static long g_pGetFunctionFromArray = 0;
+static long g_pCodeExecute = 0;
 
 static MODULEINFO GetCurrentModuleInfo()
 {
@@ -19,7 +20,32 @@ static MODULEINFO GetCurrentModuleInfo()
 
 AUMIResult AiExecuteCode(void* selfinst, void* otherinst, struct CCode* code, struct RValue* res, int flags)
 {
-	return AUMI_NOT_IMPLEMENTED;
+	if (!code)
+		return AUMI_INVALID;
+
+	if (!g_pCodeExecute)
+	{
+		MODULEINFO CurrentModuleInfo = GetCurrentModuleInfo();
+		g_pCodeExecute = PaFindAOB("\x8A\xD8\x83\xC4\x14\x80\xFB\x01\x74", "xxxxxxxxx", CurrentModuleInfo.lpBaseOfDll, CurrentModuleInfo.SizeOfImage);
+
+		if (!g_pCodeExecute)
+			return AUMI_NOT_FOUND;
+
+		//Normalize the hook, wait for '0xCC, 0xCC' sequence
+		while (*(WORD*)(g_pCodeExecute) != (WORD)0xCCCC)
+			(char*)(g_pCodeExecute) -= 1;
+
+		g_pCodeExecute += 2; //Compensate for the CC bytes
+	}
+
+	char(__cdecl * fn)(void*, void*, struct CCode*, struct RValue*, int) = g_pCodeExecute;
+
+	int ret = fn(selfinst, otherinst, code, res, flags);
+
+	if (!ret)
+		return AUMI_FAIL;
+
+	return AUMI_OK;
 }
 
 AUMIResult AiGetFunctionByIndex(int inIndex, struct RFunction* refFunction)
@@ -36,11 +62,13 @@ AUMIResult AiGetFunctionByIndex(int inIndex, struct RFunction* refFunction)
 			return AUMI_NOT_FOUND;
 	}
 
+	void* pUnk1 = NULL;
 	char* pName = NULL;
 
-	void(__cdecl* fn)(int, char**, void**, int*) = g_pGetFunctionFromArray;
+	void(__cdecl* fn)(int, char**, void**, int*, void*) = g_pGetFunctionFromArray;
 
-	fn(inIndex, &pName, &refFunction->function, &refFunction->argnum);
+	//The last param is missing from GMS2 runners, but __cdecl doesn't care about extra args, only cares about the missing ones :D
+	fn(inIndex, &pName, &refFunction->function, &refFunction->argnum, &pUnk1);
 
 	if (pName == NULL) {
 		strcpy_s(refFunction->name, 64, "<Invalid function>");
@@ -87,11 +115,6 @@ AUMIResult AiGetGlobalInstance(void* outInstance)
 	if (!outInstance)
 		return AUMI_INVALID;
 
-	struct _Out
-	{
-		struct YYObjectBase* Value;
-	};
-
 	struct RFunction FunctionEntry;
 	struct RValue Result;
 
@@ -105,7 +128,7 @@ AUMIResult AiGetGlobalInstance(void* outInstance)
 	void(*fn)(struct RValue*, void*, void*, int, struct RValue*) = FunctionEntry.function;
 	fn(&Result, NULL, NULL, 0, NULL);
 
-	((struct _Out*)outInstance)->Value = Result.value;
+	*(void**)outInstance = Result.value;
 
 	return AUMI_OK;
 }

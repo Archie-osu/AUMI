@@ -15,4 +15,4 @@ __declspec(dllexport) AUMIResult AiGetFunctionByIndex(int inIndex, struct RFunct
 
 __declspec(dllexport) AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction, int* outIndex);
 
-__declspec(dllexport) AUMIResult AiGetGlobalInstance(unsigned long* outInstance);
+__declspec(dllexport) AUMIResult AiGetGlobalInstance(void* outInstance);
