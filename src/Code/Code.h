@@ -3,6 +3,7 @@
 
 struct __declspec(dllexport) RFunction
 {
+	int index;
 	char name[64];
 	void* function;
 	int argnum;
@@ -13,6 +14,6 @@ __declspec(dllexport) AUMIResult AiExecuteCode(void* selfinst, void* otherinst, 
 
 __declspec(dllexport) AUMIResult AiGetFunctionByIndex(int inIndex, struct RFunction* refFunction);
 
-__declspec(dllexport) AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction, int* outIndex);
+__declspec(dllexport) AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction);
 
 __declspec(dllexport) AUMIResult AiGetGlobalInstance(void* outInstance);

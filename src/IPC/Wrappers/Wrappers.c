@@ -20,17 +20,15 @@ void IpcGetFunctionByIndex(const struct IPCMessage_t* Message, struct IPCReply_t
 void IpcGetFunctionByName(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
 {
 	struct RFunction RFInformation;
-	int outIndex;
-	AUMIResult result = AiGetFunctionByName(Message->Buffer, &RFInformation, &outIndex);
+	AUMIResult result = AiGetFunctionByName(Message->Buffer, &RFInformation);
 
 	Reply->AUMIResult = result;
 	memcpy(Reply->Buffer, &RFInformation, sizeof(struct RFunction));
-	memcpy(Reply->Buffer + sizeof(struct RFunction), &outIndex, sizeof(int));
 }
 
 void IpcExecuteCode(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
 {
-	struct
+	const struct
 	{
 		int CodeSize;
 		int LocalsUsed;

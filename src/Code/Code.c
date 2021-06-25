@@ -80,7 +80,7 @@ AUMIResult AiGetFunctionByIndex(int inIndex, struct RFunction* refFunction)
 	return AUMI_OK;
 }
 
-AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction, int* outIndex)
+AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction)
 {
 	if (!refFunction)
 		return AUMI_INVALID;
@@ -96,10 +96,8 @@ AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction
 		
 		if (!_stricmp(rFunction.name, inName)) 
 		{
+			refFunction->index = Index;
 			memcpy(refFunction, &rFunction, sizeof(struct RFunction));
-
-			if (outIndex)
-				*outIndex = Index;
 
 			return AUMI_OK;
 		}
@@ -119,7 +117,7 @@ AUMIResult AiGetGlobalInstance(void* outInstance)
 	struct RValue Result;
 
 
-	if (AiGetFunctionByName("@@GlobalScope@@", &FunctionEntry, NULL))
+	if (AiGetFunctionByName("@@GlobalScope@@", &FunctionEntry))
 		return AUMI_NOT_FOUND;
 
 	if (!FunctionEntry.function)
