@@ -76,6 +76,7 @@ AUMIResult AiGetFunctionByIndex(int inIndex, struct RFunction* refFunction)
 	}
 
 	memcpy(refFunction->name, pName, 64);
+	refFunction->index = inIndex;
 
 	return AUMI_OK;
 }
