@@ -8,7 +8,8 @@
 static long g_pGetFunctionFromArray = 0;
 static long g_pCodeExecute = 0;
 
-static MODULEINFO GetCurrentModuleInfo()
+static MODULEINFO 
+GetCurrentModuleInfo()
 {
 	MODULEINFO modinfo = { 0 };
 	HMODULE hModule = GetModuleHandleA(NULL);
@@ -18,7 +19,8 @@ static MODULEINFO GetCurrentModuleInfo()
 	return modinfo;
 }
 
-AUMIResult AiExecuteCode(void* selfinst, void* otherinst, struct CCode* code, struct RValue* res, int flags)
+AUMIResult 
+AUMI_ExecuteCode(void* selfinst, void* otherinst, struct CCode* code, struct RValue* res, int flags)
 {
 	if (!code)
 		return AUMI_INVALID;
@@ -48,7 +50,8 @@ AUMIResult AiExecuteCode(void* selfinst, void* otherinst, struct CCode* code, st
 	return AUMI_OK;
 }
 
-AUMIResult AiGetFunctionByIndex(int inIndex, struct RFunction* refFunction)
+AUMIResult 
+AUMI_GetFunctionByIndex(int inIndex, struct RFunction* refFunction)
 {
 	if (!refFunction)
 		return AUMI_INVALID;
@@ -81,7 +84,8 @@ AUMIResult AiGetFunctionByIndex(int inIndex, struct RFunction* refFunction)
 	return AUMI_OK;
 }
 
-AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction)
+AUMIResult 
+AUMI_GetFunctionByName(const char* inName, struct RFunction* refFunction)
 {
 	if (!refFunction)
 		return AUMI_INVALID;
@@ -91,7 +95,7 @@ AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction
 
 	while (1)
 	{
-		AUMIResult result = AiGetFunctionByIndex(Index, &rFunction);
+		AUMIResult result = AUMI_GetFunctionByIndex(Index, &rFunction);
 		if (result) 
 			return AUMI_NOT_FOUND;
 		
@@ -109,7 +113,8 @@ AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction
 	return AUMI_FAIL;
 }
 
-AUMIResult AiGetGlobalInstance(void* outInstance)
+AUMIResult 
+AUMI_GetGlobalInstance(void* outInstance)
 {
 	if (!outInstance)
 		return AUMI_INVALID;
@@ -118,7 +123,7 @@ AUMIResult AiGetGlobalInstance(void* outInstance)
 	struct RValue Result;
 
 
-	if (AiGetFunctionByName("@@GlobalScope@@", &FunctionEntry))
+	if (AUMI_GetFunctionByName("@@GlobalScope@@", &FunctionEntry))
 		return AUMI_NOT_FOUND;
 
 	if (!FunctionEntry.function)

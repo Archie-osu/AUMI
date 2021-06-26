@@ -4,7 +4,8 @@
 static HANDLE g_hPipeHandle = INVALID_HANDLE_VALUE;
 
 //Windows-exclusive, sorry.
-static BOOL InitIPCPipe()
+static BOOL 
+InitIPCPipe()
 {
 	if (g_hPipeHandle != INVALID_HANDLE_VALUE && g_hPipeHandle != 0)
 		CloseHandle(g_hPipeHandle);
@@ -25,13 +26,15 @@ static BOOL InitIPCPipe()
 	return TRUE;
 }
 
-static BOOL IpcPostReply(struct IPCReply_t* pReply)
+static BOOL 
+IpcPostReply(struct IPCReply_t* pReply)
 {
 	DWORD dwBytesTransferred;
 	return WriteFile(g_hPipeHandle, pReply, sizeof(struct IPCReply_t), &dwBytesTransferred, NULL);
 }
 
-void IpcManagerWorker()
+void 
+IpcManagerWorker()
 {
 	while (1)
 	{

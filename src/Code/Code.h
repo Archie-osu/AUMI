@@ -10,10 +10,10 @@ struct __declspec(dllexport) RFunction
 };
 
 
-__declspec(dllexport) AUMIResult AiExecuteCode(void* selfinst, void* otherinst, struct CCode* code, struct RValue* res, int flags);
+__declspec(dllexport) AUMIResult AUMI_ExecuteCode(void* selfinst, void* otherinst, struct CCode* code, struct RValue* res, int flags);
 
-__declspec(dllexport) AUMIResult AiGetFunctionByIndex(int inIndex, struct RFunction* refFunction);
+__declspec(dllexport) AUMIResult AUMI_GetFunctionByIndex(int inIndex, struct RFunction* refFunction);
 
-__declspec(dllexport) AUMIResult AiGetFunctionByName(const char* inName, struct RFunction* refFunction);
+__declspec(dllexport) AUMIResult AUMI_GetFunctionByName(const char* inName, struct RFunction* refFunction);
 
-__declspec(dllexport) AUMIResult AiGetGlobalInstance(void* outInstance);
+__declspec(dllexport) AUMIResult AUMI_GetGlobalInstance(void* outInstance);

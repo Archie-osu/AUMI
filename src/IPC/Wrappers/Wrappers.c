@@ -7,26 +7,29 @@
 #include <TlHelp32.h>
 #include <Psapi.h>
 
-void IpcGetFunctionByIndex(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
+void 
+IpcGetFunctionByIndex(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
 {
 	struct RFunction RFInformation;
 
-	AUMIResult result = AiGetFunctionByIndex(*(int*)(Message->Buffer), &RFInformation);
+	AUMIResult result = AUMI_GetFunctionByIndex(*(int*)(Message->Buffer), &RFInformation);
 
 	Reply->AUMIResult = result;
 	memcpy(Reply->Buffer, &RFInformation, sizeof(struct RFunction));
 }
 
-void IpcGetFunctionByName(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
+void 
+IpcGetFunctionByName(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
 {
 	struct RFunction RFInformation;
-	AUMIResult result = AiGetFunctionByName(Message->Buffer, &RFInformation);
+	AUMIResult result = AUMI_GetFunctionByName(Message->Buffer, &RFInformation);
 
 	Reply->AUMIResult = result;
 	memcpy(Reply->Buffer, &RFInformation, sizeof(struct RFunction));
 }
 
-void IpcExecuteCode(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
+void 
+IpcExecuteCode(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
 {
 	const struct
 	{
@@ -40,30 +43,31 @@ void IpcExecuteCode(const struct IPCMessage_t* Message, struct IPCReply_t* Reply
 	void* g_pGlobal = NULL;
 	struct RValue rv; memset(&rv, 0, sizeof(struct RValue));
 
-	if (result = AiGetGlobalInstance(&g_pGlobal))
+	if (result = AUMI_GetGlobalInstance(&g_pGlobal))
 	{
 		Reply->AUMIResult = result;
 		return;
 	}
 
-	if (result = AiCreateCode(&Code, CodeBuffer->Code, CodeBuffer->CodeSize, CodeBuffer->LocalsUsed, "AUMI Code Entry"))
+	if (result = AUMI_CreateCode(&Code, CodeBuffer->Code, CodeBuffer->CodeSize, CodeBuffer->LocalsUsed, "AUMI Code Entry"))
 	{
 		Reply->AUMIResult = result;
 		return;
 	}
 
-	if (result = AiExecuteCode(g_pGlobal, g_pGlobal, &Code, &rv, 0))
+	if (result = AUMI_ExecuteCode(g_pGlobal, g_pGlobal, &Code, &rv, 0))
 	{
 		Reply->AUMIResult = result;
-		AiDestroyCode(&Code);
+		AUMI_DestroyCode(&Code);
 		return;
 	}
 
-	AiDestroyCode(&Code); // Memory leak what?
+	AUMI_DestroyCode(&Code); // Memory leak what?
 	Reply->AUMIResult = AUMI_OK;
 }
 
-void IpcTestCommunication(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
+void 
+IpcTestCommunication(const struct IPCMessage_t* Message, struct IPCReply_t* Reply)
 {
 	Reply->AUMIResult = AUMI_OK;
 	strcpy_s(Reply->Buffer, 128, "Hello from AUMI - If you can read this, the IPC Test was successful!\nNow just making sure we copy all 128 characters. The end..");

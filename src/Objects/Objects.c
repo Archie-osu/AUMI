@@ -4,7 +4,7 @@
 #include "../Patterns/Patterns.h"
 
 AUMIResult 
-AiCreateCode(struct CCode* outCode, void* inVMCodeBuffer, int inBufferSize, int inLocalVarsUsed, const char* inName)
+AUMI_CreateCode(struct CCode* outCode, void* inVMCodeBuffer, int inBufferSize, int inLocalVarsUsed, const char* inName)
 {
 	memset(outCode, 0, sizeof(struct CCode));
 
@@ -29,7 +29,7 @@ AiCreateCode(struct CCode* outCode, void* inVMCodeBuffer, int inBufferSize, int 
 }
 
 AUMIResult 
-AiDestroyCode(struct CCode* refCode)
+AUMI_DestroyCode(struct CCode* refCode)
 {
 	if (refCode->i_flags != 'AUMI') //not ours
 		return AUMI_INVALID;
