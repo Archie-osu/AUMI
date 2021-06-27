@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="src\Code\Code.c" />
     <ClCompile Include="src\Entry.c" />
+    <ClCompile Include="src\Exceptions\Exceptions.c" />
     <ClCompile Include="src\IPC\IPC.c" />
     <ClCompile Include="src\Objects\Objects.c" />
     <ClCompile Include="src\Patterns\Patterns.c" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Code\Code.h" />
+    <ClInclude Include="src\Exceptions\Exceptions.h" />
     <ClInclude Include="src\IPC\IPC.h" />
     <ClInclude Include="src\Patterns\Patterns.h" />
     <ClInclude Include="src\Shared.h" />

@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <Windows.h>
 #include <Psapi.h>
+#include "../Exceptions/Exceptions.h"
+
 static long g_pGetFunctionFromArray = 0;
 static long g_pCodeExecute = 0;
 
@@ -42,7 +44,12 @@ AUMI_ExecuteCode(void* selfinst, void* otherinst, struct CCode* code, struct RVa
 
 	char(__cdecl * fn)(void*, void*, struct CCode*, struct RValue*, int) = g_pCodeExecute;
 
-	int ret = fn(selfinst, otherinst, code, res, flags);
+	int ret = 0;
+	__try
+	{
+		ret = fn(selfinst, otherinst, code, res, flags);
+	}
+	__except (ExceptionHandler(GetExceptionCode(), GetExceptionInformation())) { /* What?! I'm just a comment that's catching bugs! */ }
 
 	if (!ret)
 		return AUMI_FAIL;
