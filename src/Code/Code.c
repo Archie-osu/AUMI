@@ -9,6 +9,10 @@
 
 static long g_pGetFunctionFromArray = 0;
 static long g_pCodeExecute = 0;
+static long g_pWADBaseAddress = 0; // Data file begin
+static long g_pWADEndAddress = 0; // Data file end
+
+static struct SLLVMVars* g_pLLVMVars = 0;
 
 static MODULEINFO 
 GetCurrentModuleInfo()
@@ -121,7 +125,7 @@ AUMI_GetFunctionByName(const char* inName, struct RFunction* refFunction)
 }
 
 AUMIResult 
-AUMI_GetGlobalInstance(void* outInstance)
+AUMI_GetGlobalInstance(void** outInstance)
 {
 	if (!outInstance)
 		return AUMI_INVALID;
@@ -139,7 +143,88 @@ AUMI_GetGlobalInstance(void* outInstance)
 	void(*fn)(struct RValue*, void*, void*, int, struct RValue*) = FunctionEntry.function;
 	fn(&Result, NULL, NULL, 0, NULL);
 
-	*(void**)outInstance = Result.value;
+	*outInstance = Result.value;
+
+	return AUMI_OK;
+}
+
+AUMIResult 
+AUMI_GetGameDataChunk(void** outChunk, const char* ID)
+{
+	if (!g_pWADBaseAddress || !g_pWADEndAddress)
+	{
+		// Create a dummy variable for the AUMI_GetGameData function.
+		void* buf;
+		AUMI_GetGameData(&buf); // Find the game data and populate the variables needed for this function.
+	}
+
+	struct RIFF* DataFile = g_pWADBaseAddress;
+	char* CurrentChunk = &DataFile->Chunks;
+	
+	struct YYObjectBase* pGlobal = NULL;
+	AUMI_GetGlobalInstance(&pGlobal);
+	g_pLLVMVars->pGMLFuncs->pFunc(pGlobal, pGlobal);
+
+	while (1)
+	{
+		// Are we out of bounds?
+		if (CurrentChunk == NULL)
+			return AUMI_NOT_FOUND;
+
+		if (CurrentChunk > g_pWADEndAddress)
+			return AUMI_NOT_FOUND;
+
+		if (!memcmp(((struct RIFFChunk_t*)CurrentChunk)->ID, ID, 4))
+		{
+			*outChunk = CurrentChunk;
+			return AUMI_OK;
+		}
+
+		// The ChunkSize is only the size of the Data field, thus we have to add 8 bytes to compensate for the ID and length.
+		(char*)CurrentChunk += ((struct RIFFChunk_t*)CurrentChunk)->ChunkLength + 8;
+	}
+
+	return AUMI_FAIL; // How did we get here?
+}
+
+AUMIResult 
+AUMI_GetGameData(void** outPointer)
+{
+	// This might cause some issues later, please find a better sig.
+	if (!g_pWADBaseAddress || !g_pWADEndAddress)
+	{
+		MODULEINFO CurrentModuleInfo = GetCurrentModuleInfo();
+
+		unsigned char* Signature = PaFindAOB(
+			"\xE8\x00\x00\x00\x00" //call relative
+			"\xE8\x00\x00\x00\x00" //second call relative
+			"\xA1" //mov eax, ????
+			, "x????x????x", CurrentModuleInfo.lpBaseOfDll, CurrentModuleInfo.SizeOfImage);
+		
+
+		if (*(Signature + 15) == 0xC7) // YYC Direct pointer version
+			g_pWADBaseAddress = **(long**)(Signature + 17);
+		else // VM push version
+			g_pWADBaseAddress = **(long**)(Signature + 11);
+			
+		unsigned char* LLVMSignature = PaFindAOB("\x50\xE8\x00\x00\x00\x00\x83\xC4\x04", "xx????xxx", Signature, 48);
+
+		LLVMSignature += 11;
+		g_pLLVMVars = *(DWORD*)(LLVMSignature);
+
+		// Is this the YYC double pointer variant?
+		if (g_pLLVMVars->pWAD)
+			if (memcmp(g_pLLVMVars->pWAD, "FORM", 4))
+				g_pLLVMVars = *(struct SLLVMVars**)g_pLLVMVars;
+
+		if (!g_pWADBaseAddress)
+			return AUMI_NOT_FOUND;
+
+		struct RIFF* Data = g_pWADBaseAddress;
+		g_pWADEndAddress = ((char*)Data + Data->FileSize);
+	}
+
+	*outPointer = g_pWADBaseAddress;
 
 	return AUMI_OK;
 }

@@ -16,4 +16,8 @@ __declspec(dllexport) AUMIResult AUMI_GetFunctionByIndex(int inIndex, struct RFu
 
 __declspec(dllexport) AUMIResult AUMI_GetFunctionByName(const char* inName, struct RFunction* refFunction);
 
-__declspec(dllexport) AUMIResult AUMI_GetGlobalInstance(void* outInstance);
+__declspec(dllexport) AUMIResult AUMI_GetGlobalInstance(void** outInstance);
+
+__declspec(dllexport) AUMIResult AUMI_GetGameData(void** outPointer);
+
+__declspec(dllexport) AUMIResult AUMI_GetGameDataChunk(void** outPointer, const char* ID);
