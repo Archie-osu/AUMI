@@ -1,63 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="src\Entry.c" />
+    <ClCompile Include="src\Features\Hooks\Hooks.c" />
+    <ClCompile Include="src\Features\AUMI Functions\AUMI.c" />
+    <ClCompile Include="src\HDE\hde32.c" />
+    <ClCompile Include="src\HDE\hde64.c" />
+    <ClCompile Include="src\Shared.c" />
+    <ClCompile Include="src\Features\Exception Handler\Exceptions.c" />
+    <ClCompile Include="src\Features\IPC\IPC.c" />
+    <ClCompile Include="src\Features\IPC\Wrappers\Wrappers.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Entry.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Objects\Objects.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Patterns\Patterns.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Code\Code.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\IPC\IPC.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\IPC\Wrappers\Wrappers.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Exceptions\Exceptions.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Objects\Objects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Shared.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Patterns\Patterns.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Code\Code.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\IPC\IPC.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\IPC\Wrappers\Wrappers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Exceptions\Exceptions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="src\Features\Exports.h" />
+    <ClInclude Include="src\Shared.h" />
+    <ClInclude Include="src\HDE\hde32.h" />
+    <ClInclude Include="src\HDE\hde64.h" />
+    <ClInclude Include="src\HDE\pstdint.h" />
+    <ClInclude Include="src\HDE\table32.h" />
+    <ClInclude Include="src\HDE\table64.h" />
+    <ClInclude Include="src\Features\Exception Handler\Exceptions.h" />
+    <ClInclude Include="src\Features\IPC\IPC.h" />
   </ItemGroup>
 </Project>

@@ -1,39 +1,45 @@
 #pragma once
-//Prefixes of functions go as follows:
-//Ai prefix - Internal function, only usable with C / C++ code, not the IPC API.
-//Ipc prefix - IPC-only functions, usually handlers that convert the message to Ai-function compatible arguments.
-
-typedef enum __declspec(dllexport) AUMIResult
+typedef enum AUMIResult
 {
-	AUMI_OK = 0,
-	AUMI_NO_MEMORY = 1,
-	AUMI_INVALID = 2,
-	AUMI_NOT_FOUND = 3,
-	AUMI_FAIL = 4,
-	AUMI_NOT_IMPLEMENTED = 5,
+	AUMI_OK = 0,				// The operation completed successfully.
+	AUMI_FAIL = 1,				// Unspecified error occured, see source code.
+	AUMI_UNAVAILABLE = 2,		// The called function is not available in the current context.
+	AUMI_NO_MEMORY = 3,			// No more memory is available to the process.
+	AUMI_NOT_FOUND = 4,			// The specified value could not be found.
+	AUMI_NOT_IMPLEMENTED = 5,	// The specified function doesn't exist. (IPC error)
+	AUMI_INVALID = 6			// One or more arguments were invalid.
 } AUMIResult;
 
-struct RValue
+typedef void (*PFUNC_TROUTINE)(struct RValue* Result, struct YYObjectBase* Self, struct YYObjectBase* Other, int argc, struct RValue* Args);
+typedef void (*PFUNC_YYGML)(struct YYObjectBase* Self, struct YYObjectBase* Other);
+typedef char (__cdecl * PFUNC_CEXEC)(struct YYObjectBase* Self, struct YYObjectBase* Other, struct CCode* code, struct RValue* res, int flags);
+
+#pragma pack(push, 4)
+typedef struct YYRValue
 {
-	void* value;
-	void* secondvalue;
+	union
+	{
+		void* Pointer;
+		double Value;
+	};
+	
+	int Flags;
+	int Kind;
+} YYRValue, RValue;
+#pragma pack(pop)
 
-	int flags;
-	int kind;
-};
-
-struct RToken
+typedef struct RToken
 {
-	int kind;
-	int type;
-	int ind, ind2;
-	struct RValue value;
-	int itemnumb;
-	struct RToken* items;
-	int position;
-};
+	int kind;			// 0x4
+	int type;			// 0x8
+	int ind, ind2;		// 0xC, 0x10
+	RValue value;		// 0x20
+	int itemnumb;		// 0x24
+	struct RToken* items; // 0x28
+	int position;		// 0x2C
+} RToken;
 
-struct VMBuffer_t
+typedef struct VMBuffer
 {
 	void** vTable;
 	int m_size;
@@ -42,53 +48,38 @@ struct VMBuffer_t
 	char* m_pBuffer;
 	void** m_pConvertedBuffer;
 	char* m_pJumpBuffer;
-};
+} VMBuffer;
 
 #pragma pack(push, 4)
-struct CCode
+typedef struct CCode
 {
-	void** vTable;
-	struct CCode* m_pNext;
-	int i_kind;
-	int i_compiled;
-	const char* i_str;
-	struct RToken i_token;
-	struct RValue i_value;
-	struct VMBuffer_t* i_pVM;
-	struct VMBuffer_t* i_pVMDebugInfo;
+	void** vTable;				// 0x4
+	struct CCode* m_pNext;		// 0x8
+	int i_kind;					// 0xC
+	int i_compiled;				// 0x10
+	const char* i_str;			// 0x14
+	RToken i_token;				
+	RValue i_value;
+	VMBuffer* i_pVM;
+	VMBuffer* i_pVMDebugInfo;
 	char* i_pCode;
 	const char* i_pName; //0x5C
 	int i_CodeIndex;
-	void* i_pFunc;
+	struct YYGMLFuncs* i_pFunc;
 	char i_watch;
 	int i_offset;
 	int i_locals;
 	int i_args;
 	int i_flags;
-	void* i_pPrototype;
-
-};
+	struct YYObjectBase* i_pPrototype;
+} CCode;
 #pragma pack(pop)
 
-struct RIFFChunk_t
-{
-	char ID[4];
-	unsigned int ChunkLength;
-	char* Data;
-};
-
-struct RIFF
-{
-	char ID[4];
-	unsigned int FileSize;
-	char* Chunks;
-};
-
-struct YYObjectBase
+typedef struct YYObjectBase
 {
 	// CInstanceBase
 	void** vTable;
-	struct RValue* yyvars;
+	RValue* yyvars;
 
 	// YYObjectBase
 
@@ -98,9 +89,9 @@ struct YYObjectBase
 	void* m_pcre;
 	void* m_pcreExtra;
 	const char* m_class;
-	void(*m_GetOwnProperty)(struct YYObjectBase*, struct RValue*, const char*);
-	void(*m_DeleteProperty)(struct YYObjectBase*, struct RValue*, const char*, char);
-	void(*m_DefineOwnProperty)(struct YYObjectBase*, const char*, struct RValue*, char);
+	void(*m_GetOwnProperty)(struct YYObjectBase*, RValue*, const char*);
+	void(*m_DeleteProperty)(struct YYObjectBase*, RValue*, const char*, char);
+	void(*m_DefineOwnProperty)(struct YYObjectBase*, const char*, RValue*, char);
 	void* m_yyvarsMap;
 	void** m_pWeakRefs;
 	unsigned int m_numWeakRefs;
@@ -115,32 +106,27 @@ struct YYObjectBase
 	int m_kind;
 	int m_rvalueInitType;
 	int m_curSlot;
-};
+} YYObjectBase;
 
-struct __declspec(align(8)) YYVAR
+typedef struct __declspec(align(8)) YYVAR
 {
 	const char* pName;
-	int Value;
-};
+	int val;
+} YYVAR;
 
-typedef void (*PFUNC_YYGML)(struct CInstance*, struct CInstance*);
-
-struct YYGMLFuncs
+typedef struct YYGMLFuncs
 {
 	const char* pName;
 	PFUNC_YYGML pFunc;
-	struct YYVAR* pFuncVar;
+	YYVAR* pFuncVar;
+} YYGMLFuncs;
+
+struct AUMIFunctionInfo
+{
+	int Index;
+	char Name[72];
+	void* Function;
+	int Arguments;
 };
 
-struct SLLVMVars
-{
-	char* pWAD; // Optional, base address of data file in memory
-	int nWADFileLength; // Length of the data file
-	int nGlobalVariables;
-	int nInstanceVariables;
-	int nYYCode;
-	struct YYVAR** ppVars; //haha pp
-	struct YYVAR** ppFuncs;
-	struct YYGMLFuncs* pGMLFuncs;
-	void* pYYStackTrace;
-};
+unsigned long FindPattern(const char* Pattern, const char* Mask, long base, unsigned size);

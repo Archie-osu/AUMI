@@ -1,8 +1,7 @@
-#pragma once
-#include "Patterns.h"
+#include "Shared.h"
 #include <string.h>
 
-unsigned long PaFindAOB(const char* Pattern, const char* Mask, long base, unsigned size)
+unsigned long FindPattern(const char* Pattern, const char* Mask, long base, unsigned size)
 {
 	size_t PatternSize = strlen(Mask);
 

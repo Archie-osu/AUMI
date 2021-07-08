@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -17,6 +17,28 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Features\Exception Handler\Exceptions.h" />
+    <ClInclude Include="src\Features\Exports.h" />
+    <ClInclude Include="src\Features\IPC\IPC.h" />
+    <ClInclude Include="src\HDE\hde32.h" />
+    <ClInclude Include="src\HDE\hde64.h" />
+    <ClInclude Include="src\HDE\pstdint.h" />
+    <ClInclude Include="src\HDE\table32.h" />
+    <ClInclude Include="src\HDE\table64.h" />
+    <ClInclude Include="src\Shared.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Entry.c" />
+    <ClCompile Include="src\Features\Exception Handler\Exceptions.c" />
+    <ClCompile Include="src\Features\Hooks\Hooks.c" />
+    <ClCompile Include="src\Features\AUMI Functions\AUMI.c" />
+    <ClCompile Include="src\Features\IPC\IPC.c" />
+    <ClCompile Include="src\Features\IPC\Wrappers\Wrappers.c" />
+    <ClCompile Include="src\HDE\hde32.c" />
+    <ClCompile Include="src\HDE\hde64.c" />
+    <ClCompile Include="src\Shared.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -138,24 +160,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Code\Code.c" />
-    <ClCompile Include="src\Entry.c" />
-    <ClCompile Include="src\Exceptions\Exceptions.c" />
-    <ClCompile Include="src\IPC\IPC.c" />
-    <ClCompile Include="src\Objects\Objects.c" />
-    <ClCompile Include="src\Patterns\Patterns.c" />
-    <ClCompile Include="src\IPC\Wrappers\Wrappers.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Code\Code.h" />
-    <ClInclude Include="src\Exceptions\Exceptions.h" />
-    <ClInclude Include="src\IPC\IPC.h" />
-    <ClInclude Include="src\Patterns\Patterns.h" />
-    <ClInclude Include="src\Shared.h" />
-    <ClInclude Include="src\Objects\Objects.h" />
-    <ClInclude Include="src\IPC\Wrappers\Wrappers.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
