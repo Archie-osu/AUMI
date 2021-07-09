@@ -1,11 +1,9 @@
-#include "../../HDE/hde32.h"
-#include "../Exports.h"
-#include <Windows.h>
 #include <stdio.h>
 #include <stdarg.h>
-#define true 1
-#define false 0
-#define bool char
+#include <Windows.h>
+#include "../../../Shared.h"
+
+PVOID opfnYYError = NULL;
 
 // AUMI hijacks the GMS error handler, replacing it with one with no YYGMLExceptions
 void Hook_YYError(const char* pFormat, ...)

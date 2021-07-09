@@ -1,7 +1,13 @@
 #pragma once
 
-static void* pfnoYYError = NULL;
+// Variables 
+extern char(__cdecl* opfnCode_Execute)(struct YYObjectBase*, struct YYObjectBase*, struct CCode*, struct RValue*, int);
 
-void Hook_YYError(const char* pFormat, ...);
+extern void* opfnYYError;
 
-void* GetYYErrorAddress();
+// Functions
+extern void Hook_YYError(const char* pFormat, ...);
+
+extern void* GetYYErrorAddress();
+
+extern char Hook_Code_Execute(struct YYObjectBase*, struct YYObjectBase*, struct CCode*, struct RValue*, int);

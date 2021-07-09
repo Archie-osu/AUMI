@@ -11,11 +11,13 @@
 
 void AcInitRoutine() // Handles initializing of AUMI
 {
-	// TODO: If the compatibility mode is enabled, unhook.
-	// This will probably need some restructuring, not sure..
 	MH_Initialize();
 	{
-		MH_CreateHook(GetYYErrorAddress(), Hook_YYError, &pfnoYYError);
+		void* CodeExecuteAddress = NULL;
+		AUMI_GetCodeExecuteAddress(&CodeExecuteAddress);
+
+		MH_CreateHook(GetYYErrorAddress(), Hook_YYError, &opfnYYError);
+		MH_CreateHook(CodeExecuteAddress, Hook_Code_Execute, &opfnCode_Execute);
 		MH_EnableHook(MH_ALL_HOOKS);
 	}
 

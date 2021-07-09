@@ -19,6 +19,6 @@ __declspec(dllexport) extern AUMIResult AUMI_GetFunctionByIndex(int index, struc
 
 __declspec(dllexport) extern AUMIResult AUMI_GetFunctionByName(const char* Name, struct AUMIFunctionInfo* outInformation);
 
-__declspec(dllexport) extern AUMIResult AUMI_EnableCompatibilityMode(int NewState);
+__declspec(dllexport) extern AUMIResult AUMI_SetCompatibilityMode(bool NewState);
 
 __declspec(dllexport) extern AUMIResult AUMI_CallBuiltinFunction(const char* Name, RValue* Result, YYObjectBase* Self, YYObjectBase* Other, int argc, RValue* Args);

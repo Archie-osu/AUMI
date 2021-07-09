@@ -32,8 +32,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Entry.c" />
-    <ClCompile Include="src\Features\Hooks\Hooks.c" />
+    <ClCompile Include="src\Features\Hooks\Code_Execute\Code_Execute.c" />
     <ClCompile Include="src\Features\AUMI Functions\AUMI.c" />
+    <ClCompile Include="src\Features\Hooks\YYError\YYError.c" />
     <ClCompile Include="src\Features\IPC\IPC.c" />
     <ClCompile Include="src\Features\IPC\Wrappers\Wrappers.c" />
     <ClCompile Include="src\HDE\hde32.c" />

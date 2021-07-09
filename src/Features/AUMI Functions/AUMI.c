@@ -5,6 +5,7 @@
 
 #include <Windows.h>
 #include <Psapi.h>
+#include "../../MH/MinHook.h"
 
 #include "../../HDE/hde32.h"
 
@@ -43,7 +44,7 @@ AUMIResult AUMI_CreateCode(CCode* outCode, void* CodeBuffer, int CodeBufferSize,
 	outCode->i_pVM->m_numLocalVarsUsed = LocalVarsUsed;
 	memcpy(outCode->i_pVM->m_pBuffer, CodeBuffer, CodeBufferSize);
 	outCode->i_locals = LocalVarsUsed;
-	outCode->i_flags = 'AUMI'; //magic value
+	outCode->i_flags = AUMI_MAGIC; //magic value
 
 	return AUMI_OK;
 }
@@ -76,7 +77,7 @@ AUMIResult AUMI_FreeCode(CCode* Code)
 	if (!Code)
 		return AUMI_INVALID;
 
-	if (Code->i_flags != 'AUMI') //not ours
+	if (Code->i_flags != AUMI_MAGIC) //not ours
 		return AUMI_INVALID;
 
 	if (Code->i_pVM)
@@ -137,11 +138,17 @@ AUMIResult AUMI_GetCodeExecuteAddress(void** outAddress)
 	if (!outAddress)
 		return AUMI_INVALID;
 
+	AUMI_SetCompatibilityMode(true); // Prevent incompatibilities with hooked routines
+
 	MODULEINFO CurInfo = GetCurrentModuleInfo();
 	void* Base = FindPattern("\x8A\xD8\x83\xC4\x14\x80\xFB\x01\x74", "xxxxxxxxx", CurInfo.lpBaseOfDll, CurInfo.SizeOfImage);
 
 	if (!Base)
+	{
+		AUMI_SetCompatibilityMode(false);
 		return AUMI_NOT_FOUND;
+	}
+		
 
 	while (*(WORD*)Base != 0xCCCC)
 		(char*)Base -= 1;
@@ -150,6 +157,8 @@ AUMIResult AUMI_GetCodeExecuteAddress(void** outAddress)
 
 	*outAddress = Base;
 
+	AUMI_SetCompatibilityMode(false);
+
 	return AUMI_OK;
 }
 
@@ -157,9 +166,15 @@ AUMIResult AUMI_GetCodeFunctionAddress(void** outAddress)
 {
 	MODULEINFO CurInfo = GetCurrentModuleInfo();
 
-	if (!(*outAddress = FindPattern("\x8B\x44\x24\x04\x3B\x05\x00\x00\x00\x00\x7F", "xxxxxx????x", CurInfo.lpBaseOfDll, CurInfo.SizeOfImage)))
-		return AUMI_NOT_FOUND;
+	AUMI_SetCompatibilityMode(true); // Prevent incompatibilities with hooked routines
 
+	if (!(*outAddress = FindPattern("\x8B\x44\x24\x04\x3B\x05\x00\x00\x00\x00\x7F", "xxxxxx????x", CurInfo.lpBaseOfDll, CurInfo.SizeOfImage)))
+	{
+		AUMI_SetCompatibilityMode(false);
+		return AUMI_NOT_FOUND;
+	}
+	
+	AUMI_SetCompatibilityMode(false);
 	return AUMI_OK;
 }
 
@@ -226,9 +241,12 @@ AUMIResult AUMI_GetFunctionByName(const char* Name, struct AUMIFunctionInfo* out
 	return AUMI_FAIL; // How did we get here?
 }
 
-AUMIResult AUMI_EnableCompatibilityMode(int NewState)
+AUMIResult AUMI_SetCompatibilityMode(bool NewState)
 {
-	return AUMI_NOT_IMPLEMENTED;
+	if (NewState)
+		return (MH_DisableHook(MH_ALL_HOOKS) == MH_OK) ? AUMI_OK : AUMI_FAIL;
+	
+	return (MH_EnableHook(MH_ALL_HOOKS) == MH_OK) ? AUMI_OK : AUMI_FAIL;
 }
 
 AUMIResult AUMI_CallBuiltinFunction(const char* Name, RValue* Result, YYObjectBase* Self, YYObjectBase* Other, int argc, RValue* Args)

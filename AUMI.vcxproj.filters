@@ -2,13 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\Entry.c" />
-    <ClCompile Include="src\Features\Hooks\Hooks.c" />
     <ClCompile Include="src\Features\AUMI Functions\AUMI.c" />
     <ClCompile Include="src\HDE\hde32.c" />
     <ClCompile Include="src\HDE\hde64.c" />
     <ClCompile Include="src\Shared.c" />
     <ClCompile Include="src\Features\IPC\IPC.c" />
     <ClCompile Include="src\Features\IPC\Wrappers\Wrappers.c" />
+    <ClCompile Include="src\Features\Hooks\YYError\YYError.c" />
+    <ClCompile Include="src\Features\Hooks\Code_Execute\Code_Execute.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Features\Exports.h" />

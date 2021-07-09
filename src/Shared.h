@@ -3,6 +3,8 @@
 #define false 0
 #define bool char
 
+#define AUMI_MAGIC 'AAA'
+
 typedef enum AUMIResult
 {
 	AUMI_OK = 0,				// The operation completed successfully.
