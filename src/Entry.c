@@ -6,74 +6,18 @@
 #include <Windows.h>
 #include "Features/IPC/IPC.h"
 #include "Features/Exports.h"
-#include <stdio.h>
-
-#if _DEBUG
-#define UnitTests 1
-#endif
+#include "Features/Hooks/Hooks.h"
+#include "MH/MinHook.h"
 
 void AcInitRoutine() // Handles initializing of AUMI
 {
-	// Debug-only testing of built-in functions
-#if UnitTests
-	AllocConsole();
-
-	FILE* fDummy;
-	freopen_s(&fDummy, "CONIN$", "r", stdin);
-	freopen_s(&fDummy, "CONOUT$", "w", stderr);
-	freopen_s(&fDummy, "CONOUT$", "w", stdout);
-
-	AUMIResult Result;
-	
-	printf("Running tests...\n");
-
-	// AUMI_GetFunctionByIndex
+	// TODO: If the compatibility mode is enabled, unhook.
+	// This will probably need some restructuring, not sure..
+	MH_Initialize();
 	{
-		struct AUMIFunctionInfo Info; memset(&Info, 0, sizeof(struct AUMIFunctionInfo));
-
-		Result = AUMI_GetFunctionByIndex(127, &Info);
-
-		printf("Function index lookup: AUMIResult %i, Name %s, Routine 0x%p\n", Result, Info.Name, Info.Function);
+		MH_CreateHook(GetYYErrorAddress(), Hook_YYError, &pfnoYYError);
+		MH_EnableHook(MH_ALL_HOOKS);
 	}
-
-	//AUMI_GetFunctionByName
-	{
-		struct AUMIFunctionInfo Info; memset(&Info, 0, sizeof(struct AUMIFunctionInfo));
-
-		Result = AUMI_GetFunctionByName("code_is_compiled", &Info);
-
-		printf("Function name lookup: AUMIResult %i, Name %s, Routine 0x%p\n", Result, Info.Name, Info.Function);
-	}
-
-	//AUMI_GetGlobal
-	{
-		YYObjectBase* pGlobal = NULL;
-
-		Result = AUMI_GetGlobalState(&pGlobal);
-
-		printf("Get Global State: AUMIResult %i, Address: 0x%p\n", Result, pGlobal);
-	}
-
-	//AUMI_GetCodeExecuteAddress
-	{
-		void* pFunction = NULL;
-
-		Result = AUMI_GetCodeExecuteAddress(&pFunction);
-
-		printf("Code_Execute() Address: AUMIResult %i, Address 0x%p\n", Result, &pFunction);
-	}
-	
-	//AUMI_GetCodeFunctionAddress
-	{
-		void* pFunction = NULL;
-
-		Result = AUMI_GetCodeFunctionAddress(&pFunction);
-
-		printf("code_function_GET_the_function() Address: AUMIResult %i, Address 0x%p\n", Result, &pFunction);
-	}
-
-	printf("Tests finished.\n");
-#endif
 
 	while (1)
 	{

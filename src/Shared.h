@@ -1,4 +1,8 @@
 #pragma once
+#define true 1
+#define false 0
+#define bool char
+
 typedef enum AUMIResult
 {
 	AUMI_OK = 0,				// The operation completed successfully.
@@ -14,12 +18,20 @@ typedef void (*PFUNC_TROUTINE)(struct RValue* Result, struct YYObjectBase* Self,
 typedef void (*PFUNC_YYGML)(struct YYObjectBase* Self, struct YYObjectBase* Other);
 typedef char (__cdecl * PFUNC_CEXEC)(struct YYObjectBase* Self, struct YYObjectBase* Other, struct CCode* code, struct RValue* res, int flags);
 
+typedef struct RefString
+{
+	const char* m_String;
+	int m_refCount;
+	int m_Size;
+} RefString;
+
 #pragma pack(push, 4)
 typedef struct YYRValue
 {
 	union
 	{
 		void* Pointer;
+		RefString* pString;
 		double Value;
 	};
 	
@@ -125,8 +137,12 @@ struct AUMIFunctionInfo
 {
 	int Index;
 	char Name[72];
-	void* Function;
+	PFUNC_TROUTINE Function;
 	int Arguments;
 };
+
+AUMIResult YYRValue_CreateString(YYRValue* this, const char* String);
+
+AUMIResult YYRValue_FreeString(YYRValue* this);
 
 unsigned long FindPattern(const char* Pattern, const char* Mask, long base, unsigned size);

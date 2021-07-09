@@ -19,19 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Features\Exception Handler\Exceptions.h" />
     <ClInclude Include="src\Features\Exports.h" />
+    <ClInclude Include="src\Features\Hooks\Hooks.h" />
     <ClInclude Include="src\Features\IPC\IPC.h" />
     <ClInclude Include="src\HDE\hde32.h" />
     <ClInclude Include="src\HDE\hde64.h" />
     <ClInclude Include="src\HDE\pstdint.h" />
     <ClInclude Include="src\HDE\table32.h" />
     <ClInclude Include="src\HDE\table64.h" />
+    <ClInclude Include="src\MH\MinHook.h" />
     <ClInclude Include="src\Shared.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Entry.c" />
-    <ClCompile Include="src\Features\Exception Handler\Exceptions.c" />
     <ClCompile Include="src\Features\Hooks\Hooks.c" />
     <ClCompile Include="src\Features\AUMI Functions\AUMI.c" />
     <ClCompile Include="src\Features\IPC\IPC.c" />
@@ -39,6 +39,9 @@
     <ClCompile Include="src\HDE\hde32.c" />
     <ClCompile Include="src\HDE\hde64.c" />
     <ClCompile Include="src\Shared.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="src\MH\MinHook.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

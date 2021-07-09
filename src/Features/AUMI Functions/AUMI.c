@@ -1,6 +1,5 @@
 #include "../../Shared.h"
 #include "../Exports.h"
-#include "../Exception Handler/Exceptions.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -128,8 +127,7 @@ AUMIResult AUMI_ExecuteCode(YYObjectBase* Self, YYObjectBase* Other, CCode* Code
 	}
 
 	int ret = 0;
-	__try { ret = g_pCodeExecute(Self, Other, Code, Arguments, 0); }
-	__except (ExceptionHandler(GetExceptionCode(), GetExceptionInformation())) {}
+	ret = g_pCodeExecute(Self, Other, Code, Arguments, 0);
 
 	return (ret == 1) ? AUMI_OK : AUMI_FAIL;
 }
@@ -231,4 +229,17 @@ AUMIResult AUMI_GetFunctionByName(const char* Name, struct AUMIFunctionInfo* out
 AUMIResult AUMI_EnableCompatibilityMode(int NewState)
 {
 	return AUMI_NOT_IMPLEMENTED;
+}
+
+AUMIResult AUMI_CallBuiltinFunction(const char* Name, RValue* Result, YYObjectBase* Self, YYObjectBase* Other, int argc, RValue* Args)
+{
+	struct AUMIFunctionInfo mInfo;
+	AUMIResult result;
+
+	if (result = AUMI_GetFunctionByName(Name, &mInfo))
+		return result;
+
+	mInfo.Function(Result, Self, Other, argc, Args);
+
+	return AUMI_OK;
 }

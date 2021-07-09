@@ -7,7 +7,6 @@
     <ClCompile Include="src\HDE\hde32.c" />
     <ClCompile Include="src\HDE\hde64.c" />
     <ClCompile Include="src\Shared.c" />
-    <ClCompile Include="src\Features\Exception Handler\Exceptions.c" />
     <ClCompile Include="src\Features\IPC\IPC.c" />
     <ClCompile Include="src\Features\IPC\Wrappers\Wrappers.c" />
   </ItemGroup>
@@ -19,7 +18,11 @@
     <ClInclude Include="src\HDE\pstdint.h" />
     <ClInclude Include="src\HDE\table32.h" />
     <ClInclude Include="src\HDE\table64.h" />
-    <ClInclude Include="src\Features\Exception Handler\Exceptions.h" />
     <ClInclude Include="src\Features\IPC\IPC.h" />
+    <ClInclude Include="src\Features\Hooks\Hooks.h" />
+    <ClInclude Include="src\MH\MinHook.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="src\MH\MinHook.lib" />
   </ItemGroup>
 </Project>
