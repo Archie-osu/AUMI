@@ -203,6 +203,8 @@ AUMIResult AUMI_GetFunctionByIndex(int index, struct AUMIFunctionInfo* outInform
 		memcpy(outInformation->Name, *(void**)outInformation->Name, 64); // This apparently fixes strings, don't ask.
 	}
 	
+	if (!*(outInformation->Name))
+		return AUMI_NOT_FOUND;
 
 	if (Argc == 'AUMI')
 		return AUMI_NOT_FOUND;
@@ -247,6 +249,31 @@ AUMIResult AUMI_SetCompatibilityMode(bool NewState)
 		return (MH_DisableHook(MH_ALL_HOOKS) == MH_OK) ? AUMI_OK : AUMI_FAIL;
 	
 	return (MH_EnableHook(MH_ALL_HOOKS) == MH_OK) ? AUMI_OK : AUMI_FAIL;
+}
+
+AUMIResult AUMI_GetFunctionByRoutine(PFUNC_TROUTINE Routine, struct AUMIFunctionInfo* outInformation)
+{
+	struct AUMIFunctionInfo mInfo;
+	int Index = 0;
+	
+	while (1)
+	{
+		AUMIResult result;
+		if (result = AUMI_GetFunctionByIndex(Index, &mInfo))
+			return result;
+
+		if ((char*)Routine == (char*)mInfo.Function)
+		{
+			outInformation->Index = Index;
+			memcpy(outInformation, &mInfo, sizeof(struct AUMIFunctionInfo));
+
+			return AUMI_OK;
+		}
+
+		Index++;
+	}
+
+	return AUMI_NOT_FOUND;
 }
 
 AUMIResult AUMI_CallBuiltinFunction(const char* Name, RValue* Result, YYObjectBase* Self, YYObjectBase* Other, int argc, RValue* Args)

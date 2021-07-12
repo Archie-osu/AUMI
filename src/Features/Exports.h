@@ -21,4 +21,6 @@ __declspec(dllexport) extern AUMIResult AUMI_GetFunctionByName(const char* Name,
 
 __declspec(dllexport) extern AUMIResult AUMI_SetCompatibilityMode(bool NewState);
 
+__declspec(dllexport) extern AUMIResult AUMI_GetFunctionByRoutine(PFUNC_TROUTINE Routine, struct AUMIFunctionInfo* outInformation);
+
 __declspec(dllexport) extern AUMIResult AUMI_CallBuiltinFunction(const char* Name, RValue* Result, YYObjectBase* Self, YYObjectBase* Other, int argc, RValue* Args);
